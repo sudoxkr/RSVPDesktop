@@ -1,28 +1,32 @@
 # RSVPDesktop
 
-A lightweight Electron desktop app for setting a time and receiving a gentle chime beforehand.
+A lightweight Electron desktop app for daily named reminders with gentle synthesized alarms. Reminder definitions and window preferences are stored locally and restored when the app is reopened. Reminders run while the app is open.
 
-## Get the Windows installer
+## Features
 
-A GitHub Actions workflow builds an x64 Windows NSIS installer whenever changes are pushed to `main` and can also be started manually. After the run finishes, open the repository's **Actions** tab, choose **Build Windows x64 installer**, select the completed run, and download the `RSVPDesktop-windows-x64-installer` artifact. The artifact is retained for 30 days.
+- Create multiple named daily alarms, enable/disable or remove them.
+- Pick a time by typing into the time field or use the analog clock: drag/click to select the hour and minute, then choose AM/PM.
+- Choose among Soft chime, Mellow bells, and Singing bowl; preview sounds before saving.
+- Set the lead time from 1 to 60 minutes.
+- Alarm list and settings persist across app restarts on the same Windows account.
 
-The installer bundles Electron, so end users do not need Node.js or an SDK. It is intended for 64-bit Windows 11 (and should also run on compatible 64-bit Windows 10 systems).
+## Run from source
 
-## Run from source / build locally
-
-For development or building, install Node.js 20 or later, then run in the repository root:
+Install Node.js 20 or later, then run in the repository root:
 
 ```powershell
 npm install
 npm start
 ```
 
-To build the installer locally on Windows:
+## Build the Windows 11 64-bit installer
+
+On Windows, run:
 
 ```powershell
 npm run dist
 ```
 
-The installer is written to `release/`.
+The x64 NSIS installer is generated in `release/`. The packaged app includes Electron, so end users do not need Node.js or an SDK.
 
-Reminders run only while the app remains open. A time that has passed today is scheduled for the next day.
+Alarms are daily recurring. They are saved locally on the device and will be checked when the app is next opened; an alarm whose reminder window was missed while the app was closed will not play retroactively.
