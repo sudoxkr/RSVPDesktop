@@ -24,6 +24,19 @@
         <span>minutes</span>
       </div>
 
+      <section class="preferences" aria-labelledby="preferences-heading">
+        <h2 id="preferences-heading">Window preferences</h2>
+        <label for="opacity-slider" class="preference-label">
+          <span>Window opacity</span>
+          <output id="opacity-value" for="opacity-slider">100%</output>
+        </label>
+        <input id="opacity-slider" class="opacity-slider" type="range" min="50" max="100" value="100">
+        <label for="flash-toggle" class="toggle-label">
+          <span>Flash window when reminder goes off</span>
+          <input id="flash-toggle" type="checkbox" checked>
+        </label>
+      </section>
+
       <div class="actions">
         <button id="set-button" type="submit">Set reminder</button>
         <button id="cancel-button" class="secondary" type="button" disabled>Cancel</button>

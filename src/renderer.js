@@ -4,10 +4,31 @@ const leadInput = document.getElementById('lead-minutes');
 const setButton = document.getElementById('set-button');
 const cancelButton = document.getElementById('cancel-button');
 const statusLabel = document.getElementById('status');
+const opacitySlider = document.getElementById('opacity-slider');
+const opacityValue = document.getElementById('opacity-value');
+const flashToggle = document.getElementById('flash-toggle');
 
 let scheduledFor = null;
 let reminderAt = null;
 let timer = null;
+
+const savedOpacity = Number(localStorage.getItem('windowOpacity'));
+const initialOpacity = Number.isFinite(savedOpacity) && savedOpacity >= 50 && savedOpacity <= 100
+  ? savedOpacity
+  : 100;
+opacitySlider.value = String(initialOpacity);
+flashToggle.checked = localStorage.getItem('flashOnReminder') !== 'false';
+applyOpacity(initialOpacity);
+
+opacitySlider.addEventListener('input', () => {
+  const opacity = Number(opacitySlider.value);
+  applyOpacity(opacity);
+  localStorage.setItem('windowOpacity', String(opacity));
+});
+
+flashToggle.addEventListener('change', () => {
+  localStorage.setItem('flashOnReminder', String(flashToggle.checked));
+});
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -40,6 +61,7 @@ function updateCountdown() {
     window.clearInterval(timer);
     timer = null;
     playGentleChime();
+    if (flashToggle.checked) window.rsvpDesktop.flashWindow();
     statusLabel.textContent = `It's almost time — your reminder is for ${formatTime(scheduledFor)}.`;
     statusLabel.classList.add('success');
     restoreControls();
@@ -70,6 +92,12 @@ function restoreControls() {
   timeInput.disabled = false;
   leadInput.disabled = false;
   cancelButton.disabled = true;
+}
+
+function applyOpacity(opacity) {
+  opacityValue.value = `${opacity}%`;
+  opacityValue.textContent = `${opacity}%`;
+  window.rsvpDesktop.setOpacity(opacity / 100);
 }
 
 function formatTime(date) {
