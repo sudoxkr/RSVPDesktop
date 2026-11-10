@@ -1,61 +1,79 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
 
-let reminderWindow;
-let flashTimeout;
+const windows = new Set();
+const flashTimeouts = new Map();
 
-function stopWindowFlash() {
-  if (flashTimeout) {
-    clearTimeout(flashTimeout);
-    flashTimeout = null;
-  }
-  if (reminderWindow && !reminderWindow.isDestroyed()) {
-    reminderWindow.flashFrame(false);
-  }
+function stopWindowFlash(window) {
+  const timeout = flashTimeouts.get(window);
+  if (timeout) clearTimeout(timeout);
+  flashTimeouts.delete(window);
+  if (!window.isDestroyed()) window.flashFrame(false);
 }
 
-function createWindow() {
-  reminderWindow = new BrowserWindow({
-    width: 460,
-    height: 500,
-    minWidth: 420,
-    minHeight: 470,
-    resizable: true,
-    title: 'RSVP Desktop',
+function createWindow(file, options) {
+  const window = new BrowserWindow({
     backgroundColor: '#f6f7fb',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true
-    }
+    },
+    ...options
   });
 
-  reminderWindow.loadFile(path.join(__dirname, 'index.html'));
-  reminderWindow.on('closed', () => {
-    stopWindowFlash();
-    reminderWindow = null;
+  windows.add(window);
+  window.loadFile(path.join(__dirname, file));
+  window.on('closed', () => {
+    stopWindowFlash(window);
+    windows.delete(window);
+  });
+  return window;
+}
+
+function createWindows() {
+  createWindow('index.html', {
+    width: 560,
+    height: 900,
+    minWidth: 460,
+    minHeight: 650,
+    resizable: true,
+    title: 'RSVP Desktop — Configure alarms'
+  });
+
+  createWindow('monitor.html', {
+    width: 430,
+    height: 560,
+    minWidth: 350,
+    minHeight: 360,
+    resizable: true,
+    title: 'RSVP Desktop — Alarms'
   });
 }
 
 ipcMain.on('window:set-opacity', (event, opacity) => {
-  if (event.sender === reminderWindow?.webContents && Number.isFinite(opacity)) {
-    reminderWindow.setOpacity(Math.min(1, Math.max(0.5, opacity)));
+  if (![...windows].some((window) => window.webContents === event.sender) || !Number.isFinite(opacity)) return;
+  const value = Math.min(1, Math.max(0.5, opacity));
+  for (const window of windows) {
+    if (!window.isDestroyed()) window.setOpacity(value);
   }
 });
 
 ipcMain.on('window:flash', (event) => {
-  if (event.sender !== reminderWindow?.webContents || !reminderWindow) return;
-
-  stopWindowFlash();
-  reminderWindow.flashFrame(true);
-  flashTimeout = setTimeout(stopWindowFlash, 5000);
+  if (![...windows].some((window) => window.webContents === event.sender)) return;
+  for (const window of windows) {
+    if (window.isDestroyed()) continue;
+    stopWindowFlash(window);
+    window.flashFrame(true);
+    flashTimeouts.set(window, setTimeout(() => stopWindowFlash(window), 5000));
+  }
 });
 
 app.whenReady().then(() => {
-  createWindow();
+  createWindows();
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createWindows();
   });
 });
 
@@ -63,4 +81,6 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-app.on('before-quit', stopWindowFlash);
+app.on('before-quit', () => {
+  for (const window of windows) stopWindowFlash(window);
+});

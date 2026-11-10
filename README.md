@@ -1,18 +1,17 @@
 # RSVPDesktop
 
-A lightweight Electron desktop app for daily named reminders with gentle synthesized alarms. Reminder definitions and window preferences are stored locally and restored when the app is reopened. Reminders run while the app is open.
+A lightweight Electron desktop app for alarms and reminders. It opens separate configuration and live alarm-monitor windows. Named alarms, settings, and imported reminders persist locally between app restarts.
 
 ## Features
 
-- Create multiple named daily alarms, enable/disable or remove them.
-- Pick a time by typing into the time field or use the analog clock: drag/click to select the hour and minute, then choose AM/PM.
-- Choose among Soft chime, Mellow bells, and Singing bowl; preview sounds before saving.
-- Set the lead time from 1 to 60 minutes.
-- Alarm list and settings persist across app restarts on the same Windows account.
+- Configure multiple named daily alarms, edit/remove/enable them, choose one of three gentle sounds, and select times by typing or with the draggable analog clock.
+- View each alarm's time and live time-remaining countdown in a separate monitor window.
+- Paste reminder lines such as `Fafnir/Nidhogg (4): 5:55:42 PM in 7 hours`; the trailing count is ignored, the relative duration schedules a one-time reminder, and imported alarms are saved across restarts.
+- Window opacity and alarm flash preferences.
 
 ## Run from source
 
-Install Node.js 20 or later, then run in the repository root:
+Install Node.js 20 or later, then from the repository root:
 
 ```powershell
 npm install
@@ -21,7 +20,7 @@ npm start
 
 ## Build the Windows 11 64-bit installer
 
-On Windows, run:
+On Windows:
 
 ```powershell
 npm run dist
@@ -29,4 +28,4 @@ npm run dist
 
 The x64 NSIS installer is generated in `release/`. The packaged app includes Electron, so end users do not need Node.js or an SDK.
 
-Alarms are daily recurring. They are saved locally on the device and will be checked when the app is next opened; an alarm whose reminder window was missed while the app was closed will not play retroactively.
+Text import accepts one reminder per line in the format `Name: h:mm[:ss] AM/PM in N hours` or `... in N minutes`. The relative duration is used to calculate the one-time reminder instant; imported reminders use the currently selected sound and five-minute lead time by default. Existing daily alarms continue repeating daily. Reminders are evaluated while the app is running and checked when it opens; missed reminders that are already past their target are marked complete rather than played late.

@@ -4,88 +4,60 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RSVP Desktop</title>
+  <title>RSVP Desktop — Configure alarms</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="card">
+  <main class="card config-card">
     <header class="app-header">
       <div class="icon" aria-hidden="true">♪</div>
-      <div>
-        <p class="eyebrow">A LITTLE NUDGE, RIGHT ON TIME</p>
-        <h1>Your reminders</h1>
-        <p class="intro">Reminders repeat daily while the app is running.</p>
-      </div>
+      <div><p class="eyebrow">ALARM CONFIGURATION</p><h1>Set up reminders</h1><p class="intro">Changes appear in the alarms window automatically.</p></div>
     </header>
 
     <section class="alarm-list-section" aria-labelledby="alarms-heading">
-      <h2 id="alarms-heading">Alarms</h2>
+      <h2 id="alarms-heading">Configured alarms</h2>
       <ul id="alarm-list" class="alarm-list" aria-live="polite"></ul>
-      <p id="empty-state" class="empty-state">No alarms yet. Add one below.</p>
+      <p id="empty-state" class="empty-state">No alarms yet. Add one below or paste a reminder list.</p>
     </section>
 
     <details class="add-alarm" open>
-      <summary>Add an alarm</summary>
+      <summary id="form-heading">Add an alarm</summary>
       <form id="reminder-form">
         <label for="alarm-name">Name</label>
         <input id="alarm-name" type="text" maxlength="50" placeholder="e.g. Leave for work" required>
-
         <label for="reminder-time">Time</label>
         <input id="reminder-time" type="time" value="09:00" required>
         <div class="clock-picker" aria-label="Analog time picker">
           <div class="clock-toolbar">
-            <div class="clock-mode" role="group" aria-label="Clock selection mode">
-              <button id="hour-mode" class="mode-button active" type="button">Hour</button>
-              <button id="minute-mode" class="mode-button" type="button">Minute</button>
-            </div>
-            <div class="period-select" role="group" aria-label="AM or PM">
-              <button id="am-button" class="period-button" type="button">AM</button>
-              <button id="pm-button" class="period-button" type="button">PM</button>
-            </div>
+            <div class="clock-mode" role="group" aria-label="Clock selection mode"><button id="hour-mode" class="mode-button active" type="button">Hour</button><button id="minute-mode" class="mode-button" type="button">Minute</button></div>
+            <div class="period-select" role="group" aria-label="AM or PM"><button id="am-button" class="period-button" type="button">AM</button><button id="pm-button" class="period-button" type="button">PM</button></div>
           </div>
-          <svg id="analog-clock" class="analog-clock" viewBox="0 0 240 240" role="application" aria-label="Analog clock. Drag or click to select a time." tabindex="0">
-            <circle class="clock-face" cx="120" cy="120" r="108"></circle>
-            <g id="clock-marks"></g>
-            <line id="clock-hand" class="clock-hand" x1="120" y1="120" x2="120" y2="45"></line>
-            <circle class="clock-center" cx="120" cy="120" r="5"></circle>
-          </svg>
-          <p class="clock-hint">Click or drag the hand to set the selected value.</p>
+          <svg id="analog-clock" class="analog-clock" viewBox="0 0 240 240" role="application" aria-label="Analog clock. Drag or click to select a time." tabindex="0"><circle class="clock-face" cx="120" cy="120" r="108"></circle><g id="clock-marks"></g><line id="clock-hand" class="clock-hand" x1="120" y1="120" x2="120" y2="45"></line><circle class="clock-center" cx="120" cy="120" r="5"></circle></svg>
+          <p class="clock-hint">Click or drag to choose the selected value.</p>
         </div>
-
         <label for="lead-minutes">Remind me before</label>
-        <div class="lead-row">
-          <input id="lead-minutes" type="number" min="1" max="60" value="5" required>
-          <span>minutes</span>
-        </div>
-
+        <div class="lead-row"><input id="lead-minutes" type="number" min="1" max="60" value="5" required><span>minutes</span></div>
         <label for="alarm-sound">Alarm sound</label>
-        <div class="sound-row">
-          <select id="alarm-sound">
-            <option value="soft-chime">Soft chime</option>
-            <option value="mellow-bells">Mellow bells</option>
-            <option value="singing-bowl">Singing bowl</option>
-          </select>
-          <button id="preview-sound" class="secondary preview-button" type="button">Preview</button>
-        </div>
-
-        <button id="set-button" class="save-button" type="submit">Add alarm</button>
+        <div class="sound-row"><select id="alarm-sound"><option value="soft-chime">Soft chime</option><option value="mellow-bells">Mellow bells</option><option value="singing-bowl">Singing bowl</option></select><button id="preview-sound" class="secondary preview-button" type="button">Preview</button></div>
+        <div class="form-actions"><button id="set-button" class="save-button" type="submit">Add alarm</button><button id="cancel-edit" class="secondary" type="button" hidden>Cancel edit</button></div>
       </form>
     </details>
 
-    <details class="preferences">
-      <summary>Window preferences</summary>
-      <label for="opacity-slider" class="preference-label">
-        <span>Window opacity</span>
-        <output id="opacity-value" for="opacity-slider">100%</output>
-      </label>
-      <input id="opacity-slider" class="opacity-slider" type="range" min="50" max="100" value="100">
-      <label for="flash-toggle" class="toggle-label">
-        <span>Flash window when an alarm goes off</span>
-        <input id="flash-toggle" type="checkbox" checked>
-      </label>
+    <details class="import-section">
+      <summary>Import reminders from text</summary>
+      <p class="help-text">Paste lines like: <code>Fafnir/Nidhogg (4): 5:55:42 PM in 7 hours</code></p>
+      <label for="reminder-text">Reminder lines</label>
+      <textarea id="reminder-text" rows="5" placeholder="Behemoth (2): 3:06:17 AM in 16 hours"></textarea>
+      <button id="import-reminders" class="save-button" type="button">Import reminders</button>
+      <p id="import-status" class="status" role="status" aria-live="polite"></p>
     </details>
 
-    <p id="status" class="status" role="status" aria-live="polite">Add an alarm to get started.</p>
+    <details class="preferences"><summary>Window preferences</summary>
+      <label for="opacity-slider" class="preference-label"><span>Window opacity</span><output id="opacity-value" for="opacity-slider">100%</output></label>
+      <input id="opacity-slider" class="opacity-slider" type="range" min="50" max="100" value="100">
+      <label for="flash-toggle" class="toggle-label"><span>Flash windows when an alarm goes off</span><input id="flash-toggle" type="checkbox" checked></label>
+    </details>
+    <p id="status" class="status" role="status" aria-live="polite">Add or import an alarm to get started.</p>
   </main>
   <script src="renderer.js"></script>
 </body>

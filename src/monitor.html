@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSVP Desktop — Alarms</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="monitor-body">
+  <main class="card monitor-card">
+    <header class="app-header">
+      <div class="icon" aria-hidden="true">◷</div>
+      <div><p class="eyebrow">UPCOMING REMINDERS</p><h1>Your alarms</h1><p class="intro">Live countdowns to each alarm.</p></div>
+    </header>
+    <section class="alarm-list-section" aria-labelledby="monitor-heading">
+      <h2 id="monitor-heading">Alarm schedule</h2>
+      <ul id="monitor-list" class="monitor-list" aria-live="polite"></ul>
+      <p id="monitor-empty" class="empty-state">No alarms configured yet.</p>
+    </section>
+    <p id="monitor-updated" class="status">Updates automatically.</p>
+  </main>
+  <script src="monitor.js"></script>
+</body>
+</html>
