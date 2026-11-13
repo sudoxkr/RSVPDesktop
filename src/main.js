@@ -3,6 +3,7 @@ const path = require('node:path');
 
 const windows = new Set();
 const flashTimeouts = new Map();
+let monitorWindow = null;
 
 function stopWindowFlash(window) {
   const timeout = flashTimeouts.get(window);
@@ -28,6 +29,7 @@ function createWindow(file, options) {
   window.on('closed', () => {
     stopWindowFlash(window);
     windows.delete(window);
+    if (window === monitorWindow) monitorWindow = null;
   });
   return window;
 }
@@ -42,7 +44,7 @@ function createWindows() {
     title: 'RSVP Desktop — Configure alarms'
   });
 
-  createWindow('monitor.html', {
+  monitorWindow = createWindow('monitor.html', {
     width: 430,
     height: 560,
     minWidth: 350,
@@ -58,6 +60,11 @@ ipcMain.on('window:set-opacity', (event, opacity) => {
   for (const window of windows) {
     if (!window.isDestroyed()) window.setOpacity(value);
   }
+});
+
+ipcMain.on('window:set-monitor-always-on-top', (event, enabled) => {
+  if (![...windows].some((window) => window.webContents === event.sender) || typeof enabled !== 'boolean') return;
+  if (monitorWindow && !monitorWindow.isDestroyed()) monitorWindow.setAlwaysOnTop(enabled);
 });
 
 ipcMain.on('window:flash', (event) => {

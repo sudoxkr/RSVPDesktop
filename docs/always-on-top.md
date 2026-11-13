@@ -1,0 +1,1 @@
+The alarm configuration window now has a **Keep alarm window always on top** preference. When enabled, the separate alarms/countdown window stays above other windows; the configuration window is unaffected. The choice is saved locally and restored when the app is reopened.

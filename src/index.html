@@ -55,10 +55,12 @@
     <details class="preferences"><summary>Window preferences</summary>
       <label for="opacity-slider" class="preference-label"><span>Window opacity</span><output id="opacity-value" for="opacity-slider">100%</output></label>
       <input id="opacity-slider" class="opacity-slider" type="range" min="50" max="100" value="100">
+      <label for="always-on-top-toggle" class="toggle-label"><span>Keep alarm window always on top</span><input id="always-on-top-toggle" type="checkbox"></label>
       <label for="flash-toggle" class="toggle-label"><span>Flash windows when an alarm goes off</span><input id="flash-toggle" type="checkbox" checked></label>
     </details>
     <p id="status" class="status" role="status" aria-live="polite">Add or import an alarm to get started.</p>
   </main>
+  <script src="window-preferences.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html>
