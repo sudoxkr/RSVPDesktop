@@ -17,15 +17,30 @@
     document.head.append(script);
   }
 
-  const toggle = document.getElementById('always-on-top-toggle');
-  if (!toggle || !window.rsvpDesktop) return;
+  const api = window.rsvpDesktop;
 
-  const storageKey = 'monitorAlwaysOnTop';
-  toggle.checked = localStorage.getItem(storageKey) === 'true';
-  window.rsvpDesktop.setMonitorAlwaysOnTop(toggle.checked);
+  const topToggle = document.getElementById('always-on-top-toggle');
+  if (topToggle && api) {
+    topToggle.checked = localStorage.getItem('monitorAlwaysOnTop') === 'true';
+    api.setMonitorAlwaysOnTop(topToggle.checked);
 
-  toggle.addEventListener('change', () => {
-    localStorage.setItem(storageKey, String(toggle.checked));
-    window.rsvpDesktop.setMonitorAlwaysOnTop(toggle.checked);
-  });
+    topToggle.addEventListener('change', () => {
+      localStorage.setItem('monitorAlwaysOnTop', String(topToggle.checked));
+      api.setMonitorAlwaysOnTop(topToggle.checked);
+    });
+  }
+
+  // Keep the click-through preference connected to Electron's native
+  // setIgnoreMouseEvents API. CSS pointer-events alone cannot pass input to
+  // applications behind a native window.
+  const clickThroughToggle = document.getElementById('click-through-toggle');
+  if (clickThroughToggle) {
+    clickThroughToggle.checked = localStorage.getItem('monitorClickThrough') === 'true';
+    if (api) api.setMonitorClickThrough(clickThroughToggle.checked);
+
+    clickThroughToggle.addEventListener('change', () => {
+      localStorage.setItem('monitorClickThrough', String(clickThroughToggle.checked));
+      if (api) api.setMonitorClickThrough(clickThroughToggle.checked);
+    });
+  }
 })();
