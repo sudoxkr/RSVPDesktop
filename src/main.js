@@ -3,6 +3,7 @@ const path = require('node:path');
 
 const windows = new Set();
 const flashTimeouts = new Map();
+let configWindow = null;
 let monitorWindow = null;
 
 function stopWindowFlash(window) {
@@ -33,13 +34,14 @@ function createWindow(file, options) {
   window.on('closed', () => {
     stopWindowFlash(window);
     windows.delete(window);
+    if (window === configWindow) configWindow = null;
     if (window === monitorWindow) monitorWindow = null;
   });
   return window;
 }
 
 function createWindows() {
-  createWindow('index.html', {
+  configWindow = createWindow('index.html', {
     width: 560,
     height: 900,
     minWidth: 460,
@@ -66,10 +68,12 @@ function createWindows() {
 
 ipcMain.on('window:set-opacity', (event, opacity) => {
   if (!isKnownWindow(event.sender) || !Number.isFinite(opacity)) return;
-  const value = Math.min(1, Math.max(0.5, opacity));
-  for (const window of windows) {
-    if (!window.isDestroyed()) window.setOpacity(value);
+  // The opacity preference controls only the alarm monitor; keep the
+  // configuration window at its normal, fully opaque appearance.
+  if (monitorWindow && !monitorWindow.isDestroyed()) {
+    monitorWindow.setOpacity(Math.min(1, Math.max(0.1, opacity)));
   }
+  if (configWindow && !configWindow.isDestroyed()) configWindow.setOpacity(1);
 });
 
 ipcMain.on('window:set-monitor-always-on-top', (event, enabled) => {
