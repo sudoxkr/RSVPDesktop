@@ -55,10 +55,15 @@
     <details class="preferences"><summary>Window preferences</summary>
       <label for="opacity-slider" class="preference-label"><span>Window opacity</span><output id="opacity-value" for="opacity-slider">100%</output></label>
       <input id="opacity-slider" class="opacity-slider" type="range" min="50" max="100" value="100">
+      <label for="monitor-background-color">Alarm window background</label>
+      <input id="monitor-background-color" class="color-picker" type="color" value="#f6f7fb">
+      <label for="monitor-font-color">Alarm window font color</label>
+      <input id="monitor-font-color" class="color-picker" type="color" value="#233047">
       <label for="always-on-top-toggle" class="toggle-label"><span>Keep alarm window always on top</span><input id="always-on-top-toggle" type="checkbox"></label>
       <label for="click-through-toggle" class="toggle-label"><span>Click through alarm window</span><input id="click-through-toggle" type="checkbox"></label>
       <p class="help-text">When enabled, mouse input passes through the alarm window to the window underneath. Turn it off here to interact with the alarm window again.</p>
       <label for="flash-toggle" class="toggle-label"><span>Flash windows when an alarm goes off</span><input id="flash-toggle" type="checkbox" checked></label>
+      <button id="reset-monitor-theme" class="small-button" type="button">Reset theme</button>
     </details>
     <p id="status" class="status" role="status" aria-live="polite">Add or import an alarm to get started.</p>
   </main>

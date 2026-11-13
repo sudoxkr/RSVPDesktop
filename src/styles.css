@@ -60,17 +60,24 @@ textarea { display: block; width: 100%; padding: 9px 10px; resize: vertical; fon
 .preference-label { display: flex; justify-content: space-between; align-items: center; margin: 12px 0 5px; }
 .preference-label output { color: #718096; font-weight: 400; }
 input.opacity-slider { width: 100%; height: 24px; min-height: 24px; margin: 0; border: 0; accent-color: #536fca; }
+input.color-picker { display: block; width: 100%; height: 38px; padding: 3px; }
 .toggle-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 0; }
 input[type="checkbox"] { width: 18px; height: 18px; min-height: 18px; margin: 0; accent-color: #536fca; }
 .status { min-height: 18px; margin: 15px 0 0; color: #75819a; font-size: 11px; line-height: 1.5; }
 .status.success { color: #287452; }
-.monitor-body { padding: 18px; }
-.monitor-card { max-width: 600px; padding: 24px; }
-.monitor-card .alarm-list-section { margin-top: 26px; }
-.monitor-item { padding: 16px; border: 1px solid #e8eaf1; border-radius: 12px; background: #fff; }
-.monitor-item-top, .monitor-item-bottom { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.monitor-item-top strong { font-size: 14px; overflow-wrap: anywhere; }
-.monitor-item-top time { color: #405da9; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.monitor-item-bottom { margin-top: 9px; color: #718096; font-size: 11px; }
-.countdown { color: #287452; font-weight: 650; font-variant-numeric: tabular-nums; }
+.monitor-body { width: 100vw; height: 100vh; min-height: 0; overflow: hidden; padding: 0; background: transparent; }
+.monitor-card { --monitor-scale: 1; --monitor-background: #f6f7fb; --monitor-font-color: #233047; width: 100%; height: 100%; max-width: none; min-height: 0; align-self: stretch; display: flex; flex-direction: column; gap: calc(8px * var(--monitor-scale)); overflow: hidden; padding: calc(10px * var(--monitor-scale)); background: var(--monitor-background); border: 1px solid color-mix(in srgb, var(--monitor-font-color) 20%, transparent); border-radius: 10px; box-shadow: none; color: var(--monitor-font-color); }
+.monitor-card * { color: inherit; }
+.monitor-drag-handle { flex: 0 0 auto; min-height: 18px; padding: 2px 6px; text-align: center; font-size: calc(9px * var(--monitor-scale)); line-height: 1.2; opacity: .7; cursor: move; user-select: none; -webkit-app-region: drag; }
+.monitor-card .alarm-list-section { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin: 0; }
+.monitor-card h2 { flex: 0 0 auto; margin: 0 0 calc(6px * var(--monitor-scale)); font-size: calc(11px * var(--monitor-scale)); }
+.monitor-list { --alarm-count: 1; flex: 1 1 auto; min-height: 0; grid-template-rows: repeat(var(--alarm-count), minmax(0, 1fr)); gap: calc(4px * var(--monitor-scale)); overflow: hidden; }
+.monitor-item { min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: calc(3px * var(--monitor-scale)); overflow: hidden; padding: calc(5px * var(--monitor-scale)); border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 7px; background: transparent; }
+.monitor-item-top, .monitor-item-bottom { min-width: 0; display: flex; justify-content: space-between; align-items: center; gap: calc(5px * var(--monitor-scale)); }
+.monitor-item-top strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: calc(13px * var(--monitor-scale)); }
+.monitor-item-top time { flex: 0 0 auto; font-size: calc(13px * var(--monitor-scale)); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.monitor-item-bottom { font-size: calc(10px * var(--monitor-scale)); }
+.countdown { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; font-variant-numeric: tabular-nums; }
+.monitor-card .empty-state { flex: 1; display: grid; place-items: center; min-height: 0; margin: 0; padding: calc(8px * var(--monitor-scale)); border-color: color-mix(in srgb, currentColor 25%, transparent); font-size: calc(12px * var(--monitor-scale)); }
+.monitor-card .status { flex: 0 0 auto; min-height: 0; margin: 0; font-size: calc(9px * var(--monitor-scale)); }
 [hidden] { display: none !important; }

@@ -52,10 +52,16 @@ function createWindows() {
     width: 430,
     height: 560,
     minWidth: 350,
-    minHeight: 360,
+    minHeight: 300,
     resizable: true,
+    frame: false,
+    transparent: true,
+    backgroundColor: '#00000000',
+    hasShadow: false,
+    autoHideMenuBar: true,
     title: 'RSVP Desktop — Alarms'
   });
+  monitorWindow.setMenuBarVisibility(false);
 }
 
 ipcMain.on('window:set-opacity', (event, opacity) => {
@@ -74,7 +80,6 @@ ipcMain.on('window:set-monitor-always-on-top', (event, enabled) => {
 ipcMain.on('window:set-monitor-click-through', (event, enabled) => {
   if (!isKnownWindow(event.sender) || typeof enabled !== 'boolean') return;
   if (monitorWindow && !monitorWindow.isDestroyed()) {
-    // Forward pointer events through the overlay to the next window underneath.
     monitorWindow.setIgnoreMouseEvents(enabled, enabled ? { forward: true } : undefined);
   }
 });

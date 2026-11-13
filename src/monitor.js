@@ -1,6 +1,7 @@
 const list = document.getElementById('monitor-list');
 const empty = document.getElementById('monitor-empty');
 const updated = document.getElementById('monitor-updated');
+const card = document.querySelector('.monitor-card');
 
 function readAlarms() {
   try {
@@ -24,6 +25,13 @@ function getNext(alarm, now) {
 
 function dateKey(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function applyTheme() {
+  const background = localStorage.getItem('monitorBackgroundColor');
+  const fontColor = localStorage.getItem('monitorFontColor');
+  card.style.setProperty('--monitor-background', /^#[\da-f]{6}$/i.test(background || '') ? background : '#f6f7fb');
+  card.style.setProperty('--monitor-font-color', /^#[\da-f]{6}$/i.test(fontColor || '') ? fontColor : '#233047');
 }
 
 function render() {
@@ -56,6 +64,7 @@ function render() {
     item.append(top, bottom);
     list.append(item);
   }
+  applyTheme();
   updated.textContent = `Updated ${new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(now)}`;
 }
 
