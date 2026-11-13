@@ -12,6 +12,10 @@ function stopWindowFlash(window) {
   if (!window.isDestroyed()) window.flashFrame(false);
 }
 
+function isKnownWindow(sender) {
+  return [...windows].some((window) => !window.isDestroyed() && window.webContents === sender);
+}
+
 function createWindow(file, options) {
   const window = new BrowserWindow({
     backgroundColor: '#f6f7fb',
@@ -55,7 +59,7 @@ function createWindows() {
 }
 
 ipcMain.on('window:set-opacity', (event, opacity) => {
-  if (![...windows].some((window) => window.webContents === event.sender) || !Number.isFinite(opacity)) return;
+  if (!isKnownWindow(event.sender) || !Number.isFinite(opacity)) return;
   const value = Math.min(1, Math.max(0.5, opacity));
   for (const window of windows) {
     if (!window.isDestroyed()) window.setOpacity(value);
@@ -63,12 +67,20 @@ ipcMain.on('window:set-opacity', (event, opacity) => {
 });
 
 ipcMain.on('window:set-monitor-always-on-top', (event, enabled) => {
-  if (![...windows].some((window) => window.webContents === event.sender) || typeof enabled !== 'boolean') return;
+  if (!isKnownWindow(event.sender) || typeof enabled !== 'boolean') return;
   if (monitorWindow && !monitorWindow.isDestroyed()) monitorWindow.setAlwaysOnTop(enabled);
 });
 
+ipcMain.on('window:set-monitor-click-through', (event, enabled) => {
+  if (!isKnownWindow(event.sender) || typeof enabled !== 'boolean') return;
+  if (monitorWindow && !monitorWindow.isDestroyed()) {
+    // Forward pointer events through the overlay to the next window underneath.
+    monitorWindow.setIgnoreMouseEvents(enabled, enabled ? { forward: true } : undefined);
+  }
+});
+
 ipcMain.on('window:flash', (event) => {
-  if (![...windows].some((window) => window.webContents === event.sender)) return;
+  if (!isKnownWindow(event.sender)) return;
   for (const window of windows) {
     if (window.isDestroyed()) continue;
     stopWindowFlash(window);
